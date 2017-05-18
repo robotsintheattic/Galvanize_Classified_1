@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const knex = require('knex');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
