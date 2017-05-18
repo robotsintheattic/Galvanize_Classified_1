@@ -5,9 +5,6 @@ module.exports = {
   development: {
     client: 'pg',
     connection: 'postgres://localhost/classifieds'
-    // seeds: {
-    //   directory: './seeds/classifieds.js'
-    // }
   },
 
   test: {
