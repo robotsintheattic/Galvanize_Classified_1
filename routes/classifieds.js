@@ -5,51 +5,79 @@ const express = require('express');
 const router = express.Router();
 const knex = require('../knex')
 
-router.get('/', function(req, res) {
-  knex('classifieds').then(function(classifieds) {
-    res.send(classifieds);
-  }).catch(function(err) {
-    res.send(err);
+router.get('/classifieds', (req, res, next) => {
+  knex('classifieds')
+  .select('id', 'title', 'title', 'description', 'price', 'item_image')
+  .orderBy('id')
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => {
+    next(err);
   });
 });
 
-router.get('/:id', function(req, res) {
+router.get('/classifieds/:id', (req, res, next) => {
+  let id = Number.parseInt(req.params.id)
+
   knex('classifieds')
-    .where({id: req.params.id})
-    .first()
-    .then(function(ad) {
-      res.send(ad);
-    }).catch(function(err) {
-      res.send(err);
+    .select(['id', 'title', 'description', 'price', 'item_image'])
+    .where('id', id)
+    .then((data) => {
+      res.send(data[0]);
+    })
+    .catch((err) => {
+      next(err);
     })
 })
 
-router.post('/', function(req, res) {
-  knex('classifieds').insert(req.body, '*').then(function(ad) {
-    res.send(ad);
-  }).catch(function(err) {
-    res.send(err);
-  });
-});
-
-router.delete('/:id', function(req, res) {
-  knex('classifieds').where('id', req.params.id).first().del().then(function() {
-    res.send("Ad Deleted!");
-  }).catch(function(err) {
-    res.send(err);
-  });
-});
-
-router.put('/:id', function(req, res) {
+router.post('/classifieds', (req, res, next) => {
   knex('classifieds')
-    .where('id', req.params.id)
+  .returning(['id', 'title', 'description', 'price', 'item_image'])
+  .insert({
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.price,
+    item_image: req.body.item_image
+  })
+  .then((data) => {
+    res.send(data[0]);
+  })
+  .catch((err) => {
+    next(err);
+  });
+});
+
+router.patch('/classifieds/:id', (req, res, next) => {
+  let id = Number.parseInt(req.params.id)
+
+  knex('classifieds')
+    .where('id', id)
+    .returning(['id', 'title', 'description', 'price', 'item_image'])
     .update(req.body)
-    .then(function() {
-      res.send("Ad Updated!")
-    }).catch(function(err) {
-      res.send(err);
+    .then((data) => {
+      res.send(data[0])
+      // "Ad Updated!"
+    })
+    .catch((err) => {
+      next(err);
     });
 });
 
+router.delete('/classifieds/:id', (req, res, next) => {
+  let id = Number.parseInt(req.params.id)
+
+  knex('classifieds')
+    .where('id', req.params.id)
+    .returning(['id', 'title', 'description', 'price', 'item_image'])
+    .del()
+    .then((data) => {
+      res.send(data[0]);
+    // "Ad Deleted!"
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
 
 module.exports = router;

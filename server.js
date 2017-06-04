@@ -9,8 +9,8 @@ const knex = require('knex');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 
-const messages = require('./routes/classifieds');
-app.use('/classifieds', messages);
+const messages = require('./routes/classifieds.js');
+app.use('/', messages);
 
 const port = process.env.PORT || 3000;
 
