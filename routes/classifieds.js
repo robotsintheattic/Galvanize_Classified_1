@@ -50,12 +50,13 @@ router.post('/classifieds', (req, res, next) => {
 
 router.patch('/classifieds/:id', (req, res, next) => {
   let id = Number.parseInt(req.params.id)
-
+  console.log(req.body)
   knex('classifieds')
     .where('id', id)
     .returning(['id', 'title', 'description', 'price', 'item_image'])
     .update(req.body)
     .then((data) => {
+      console.log(data[0])
       res.send(data[0])
       // "Ad Updated!"
     })

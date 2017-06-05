@@ -10,7 +10,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 
 const messages = require('./routes/classifieds.js');
-app.use('/', messages);
+app.use('/api', messages);
 
 const port = process.env.PORT || 3000;
 
